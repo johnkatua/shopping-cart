@@ -4,19 +4,14 @@ import { Badge, Card } from 'antd'
 import ProductsPage from './components/ProductsPage'
 import CartPage from './components/CartPage'
 import './App.css'
-
-const tabList = [
-  {
-    key: 'productList',
-    label: 'Product List'
-  },
-  {
-    key: 'cart',
-    label: <Badge size='small' count={1} offset={[8, 1]} status='processing'>Cart</Badge>
-  }
-]
+import { useCartStore } from './store/cartStore'
 
 const App: FC = () => {
+  const { cart } = useCartStore(state => ({
+    cart: state.cart
+  }))
+
+  const totalPrice: number = cart.reduce((total, { price, quantity }) => total + (price * quantity), 0);
   const [activeTabKey, setActiveTabKey] = useState<string>('productList');
 
   const onTabChange = (key: string) => {
@@ -29,6 +24,17 @@ const App: FC = () => {
       <CartPage />
     )
   }
+
+  const tabList = [
+    {
+      key: 'productList',
+      label: 'Product List'
+    },
+    {
+      key: 'cart',
+      label: <Badge size='small' count={cart.length} offset={[8, 1]} status='processing'>Cart</Badge>
+    }
+  ]
   return (
     <Card 
       style={{
@@ -38,7 +44,7 @@ const App: FC = () => {
       }}
       tabList={tabList}
       activeTabKey={activeTabKey}
-      tabBarExtraContent={<div>Total: 0</div>}
+      tabBarExtraContent={<div>Total: {totalPrice}</div>}
       onTabChange={onTabChange}
       tabProps={{ size: 'middle' }}
     >

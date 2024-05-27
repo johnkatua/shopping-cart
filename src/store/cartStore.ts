@@ -29,5 +29,5 @@ export const useCartStore = create<CartState>()(persist((set, get) => ({
           item.id === productId ? { ...item, quantity: item.quantity + value } : item
       ).filter(item => item.quantity > 0)
     }));
-  },
+  }
 }), { name: 'cart-storage'}))

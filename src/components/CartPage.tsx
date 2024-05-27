@@ -22,8 +22,8 @@ const CartPage: FC = () => {
       dataIndex: 'quantity'
     },
     {
-      title: 'Total Price (ksh)',
-      dataIndex: 'totalPrice'
+      title: 'Price (ksh)',
+      dataIndex: 'price'
     },
     {
       title: 'Actions',
