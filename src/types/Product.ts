@@ -5,3 +5,8 @@ export interface Product {
   image: string,
   description: string
 }
+
+export interface ProductState {
+  products: Product[],
+  fetchProducts: () => Promise<void>
+}
