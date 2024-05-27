@@ -1,10 +1,9 @@
 import { ReactNode, FC, useState } from 'react'
-import { Card } from 'antd'
+import { Badge, Card } from 'antd'
 
 import ProductsPage from './components/ProductsPage'
 import CartPage from './components/CartPage'
 import './App.css'
-import { Cart } from './types/Cart'
 
 const tabList = [
   {
@@ -13,13 +12,12 @@ const tabList = [
   },
   {
     key: 'cart',
-    label: 'Cart'
+    label: <Badge size='small' count={1} offset={[8, 1]} status='processing'>Cart</Badge>
   }
 ]
 
 const App: FC = () => {
   const [activeTabKey, setActiveTabKey] = useState<string>('productList');
-  const [cart, setCart] = useState<Cart[]>([]);
 
   const onTabChange = (key: string) => {
     setActiveTabKey(key)
@@ -28,10 +26,7 @@ const App: FC = () => {
   const contentList: Record<string, ReactNode> = {
     productList: <ProductsPage />,
     cart: (
-      <CartPage  
-        cart={cart}
-        setCart={setCart}
-      />
+      <CartPage />
     )
   }
   return (

@@ -11,16 +11,23 @@ export const useCartStore = create<CartState>()(persist((set, get) => ({
         cart: state.cart.map((item) => 
           item.id === product.id ? { ...item, quantity: item.quantity + 1} : item
         )
-      }))
+      }));
     } else {
       set(state => ({
         cart: [...state.cart, { ...product, quantity: 1 }]
-      }))
+      }));
     }
   },
   removeFromCart: (productId) => {
     set(state => ({
       cart: state.cart.filter(item => item.id !== productId)
+    }));
+  },
+  updateQuantity(productId, value) {
+    set(state => ({
+      cart: state.cart.map(item => 
+          item.id === productId ? { ...item, quantity: item.quantity + value } : item
+      ).filter(item => item.quantity > 0)
     }));
   },
 }), { name: 'cart-storage'}))
