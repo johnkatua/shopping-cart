@@ -26,10 +26,7 @@ const App: FC = () => {
   }
 
   const contentList: Record<string, ReactNode> = {
-    productList: <ProductsPage 
-      setCart={setCart}
-      cart={cart}
-    />,
+    productList: <ProductsPage />,
     cart: (
       <CartPage  
         cart={cart}

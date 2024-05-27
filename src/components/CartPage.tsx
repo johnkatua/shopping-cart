@@ -2,13 +2,17 @@ import { Dispatch, FC, SetStateAction } from "react";
 import { Cart } from "../types/Cart";
 import { Button, Table } from "antd";
 import type { TableColumnsType } from "antd";
+import { useCartStore } from "../store/cartStore";
 
 interface CartPageProps {
   cart: Cart[],
   setCart: Dispatch<SetStateAction<Cart[]>>,
 }
 
-const CartPage: FC<CartPageProps> = ({ cart, setCart }) => {
+const CartPage: FC<CartPageProps> = ({ setCart }) => {
+  const { cart } = useCartStore(state => ({
+    cart: state.cart
+  }))
 
   const removeItemFromCart = (item: Cart) => {
     const { id } = item;
