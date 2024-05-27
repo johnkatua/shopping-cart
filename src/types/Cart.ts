@@ -7,5 +7,6 @@ export interface Cart extends Product {
 
 export interface CartState {
   cart: Cart[],
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product) => void,
+  removeFromCart: (productId: number) => void,
 }

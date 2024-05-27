@@ -18,4 +18,9 @@ export const useCartStore = create<CartState>()(persist((set, get) => ({
       }))
     }
   },
+  removeFromCart: (productId) => {
+    set(state => ({
+      cart: state.cart.filter(item => item.id !== productId)
+    }));
+  },
 }), { name: 'cart-storage'}))

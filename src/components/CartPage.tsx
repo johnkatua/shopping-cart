@@ -10,8 +10,9 @@ interface CartPageProps {
 }
 
 const CartPage: FC<CartPageProps> = ({ setCart }) => {
-  const { cart } = useCartStore(state => ({
-    cart: state.cart
+  const { cart, removeFromCart } = useCartStore(state => ({
+    cart: state.cart,
+    removeFromCart: state.removeFromCart
   }))
 
   const removeItemFromCart = (item: Cart) => {
@@ -69,7 +70,7 @@ const CartPage: FC<CartPageProps> = ({ setCart }) => {
           {" "}
           <Button
             type="primary" 
-            onClick={() => removeItemFromCart(record)}
+            onClick={() => removeFromCart(record.id)}
           >
             Remove
           </Button>
