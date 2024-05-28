@@ -1,42 +1,40 @@
 import { ReactNode, FC, useState } from 'react'
-import { Card } from 'antd'
+import { Badge, Card } from 'antd'
 
 import ProductsPage from './components/ProductsPage'
 import CartPage from './components/CartPage'
 import './App.css'
-import { Cart } from './types/Cart'
-
-const tabList = [
-  {
-    key: 'productList',
-    label: 'Product List'
-  },
-  {
-    key: 'cart',
-    label: 'Cart'
-  }
-]
+import { useCartStore } from './store/cartStore'
 
 const App: FC = () => {
+  const { cart } = useCartStore(state => ({
+    cart: state.cart
+  }))
+
+  const totalPrice: number = cart.reduce((total, { price, quantity }) => total + (price * quantity), 0);
   const [activeTabKey, setActiveTabKey] = useState<string>('productList');
-  const [cart, setCart] = useState<Cart[]>([]);
 
   const onTabChange = (key: string) => {
     setActiveTabKey(key)
   }
 
   const contentList: Record<string, ReactNode> = {
-    productList: <ProductsPage 
-      setCart={setCart}
-      cart={cart}
-    />,
+    productList: <ProductsPage />,
     cart: (
-      <CartPage  
-        cart={cart}
-        setCart={setCart}
-      />
+      <CartPage />
     )
   }
+
+  const tabList = [
+    {
+      key: 'productList',
+      label: 'Product List'
+    },
+    {
+      key: 'cart',
+      label: <Badge size='small' count={cart.length} offset={[8, 1]} status='processing'>Cart</Badge>
+    }
+  ]
   return (
     <Card 
       style={{
@@ -46,7 +44,7 @@ const App: FC = () => {
       }}
       tabList={tabList}
       activeTabKey={activeTabKey}
-      tabBarExtraContent={<div>Total: 0</div>}
+      tabBarExtraContent={<div>Total: {totalPrice}</div>}
       onTabChange={onTabChange}
       tabProps={{ size: 'middle' }}
     >

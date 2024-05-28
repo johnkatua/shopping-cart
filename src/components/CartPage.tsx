@@ -1,36 +1,17 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 import { Cart } from "../types/Cart";
 import { Button, Table } from "antd";
 import type { TableColumnsType } from "antd";
+import { useCartStore } from "../store/cartStore";
 
-interface CartPageProps {
-  cart: Cart[],
-  setCart: Dispatch<SetStateAction<Cart[]>>,
-}
 
-const CartPage: FC<CartPageProps> = ({ cart, setCart }) => {
+const CartPage: FC = () => {
+  const { cart, removeFromCart, updateQuantity } = useCartStore(state => ({
+    cart: state.cart,
+    removeFromCart: state.removeFromCart,
+    updateQuantity: state.updateQuantity
+  }))
 
-  const removeItemFromCart = (item: Cart) => {
-    const { id } = item;
-    setCart(cart.filter((el) => el.id !== id))
-  }
-
-  const updateQuantity = (item: Cart, action: string) => {
-    const { id } = item;
-    setCart(prev => prev.map(el => {
-      if (el.id === id) {
-        const { quantity } = el;
-        const newQuantity = action === 'add' ? quantity + 1 : quantity - 1;
-        if (newQuantity <= 0) {
-          removeItemFromCart(el)
-          return null
-        }
-        return { ...el, quantity: newQuantity }
-      } else {
-        return el
-      }
-    }).filter(Boolean) as Cart[])
-  }
   const columns: TableColumnsType<Cart> = [
     {
       title: 'Name',
@@ -41,8 +22,8 @@ const CartPage: FC<CartPageProps> = ({ cart, setCart }) => {
       dataIndex: 'quantity'
     },
     {
-      title: 'Total Price (ksh)',
-      dataIndex: 'totalPrice'
+      title: 'Price (ksh)',
+      dataIndex: 'price'
     },
     {
       title: 'Actions',
@@ -51,21 +32,21 @@ const CartPage: FC<CartPageProps> = ({ cart, setCart }) => {
         <>
           <Button
             type="primary" 
-            onClick={() => updateQuantity(record, 'add')}
+            onClick={() => updateQuantity(record.id, 1)}
           >
             Add
           </Button>
           {" "}
           <Button
             type="primary" 
-            onClick={() => updateQuantity(record, 'subtract')}
+            onClick={() => updateQuantity(record.id, -1)}
           >
             Subtract
           </Button>
           {" "}
           <Button
             type="primary" 
-            onClick={() => removeItemFromCart(record)}
+            onClick={() => removeFromCart(record.id)}
           >
             Remove
           </Button>

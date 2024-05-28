@@ -1,30 +1,19 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { Button, Table, Tooltip } from "antd";
 import type { TableColumnsType } from "antd";
+
 import { Product } from "../types/Product";
-import { fetchProducts } from "../services/productService";
-import { Cart } from "../types/Cart";
+import { useProductStore } from "../store/productStore";
+import { useCartStore } from "../store/cartStore";
 
-interface ProductsPageProps {
-  setCart: Dispatch<SetStateAction<Cart[]>>,
-  cart: Cart[]
-}
 
-const ProductsPage: FC<ProductsPageProps> = ({ cart, setCart }) => {
-  const [products, setProducts] = useState<Product[]>([])
-
-  const addItemToCart = (item: Product) => {
-    const { id, name, price } = item;
-    const existingProduct = cart.find(product => product.id === id);
-    if (existingProduct) {
-      setCart(cart.map((el) => el.id === id ? {
-        ...el, name, quantity: el.quantity + 1, totalPrice: price * el.quantity
-      } : el))
-    } else {
-      setCart([ ...cart, { id, name, quantity: 1, totalPrice: price }])
-    }
-
-  }
+const ProductsPage: FC = () => {
+  const { addToCart } = useCartStore(state => ({
+    addToCart: state.addToCart
+  }))
+  const { products, fetchProducts } = useProductStore((state) => ({ 
+    products: state.products, fetchProducts: state.fetchProducts 
+  }));
 
   const columns: TableColumnsType<Product> = [
     {
@@ -66,7 +55,7 @@ const ProductsPage: FC<ProductsPageProps> = ({ cart, setCart }) => {
       render: (_, record) => (
         <Button 
           type="primary" 
-          onClick={() => addItemToCart(record)}
+          onClick={() => addToCart(record)}
         >
           Add To Cart
         </Button>
@@ -75,12 +64,9 @@ const ProductsPage: FC<ProductsPageProps> = ({ cart, setCart }) => {
   ]
 
   useEffect(() => {
-    const getProducts = async () => {
-      const res = await fetchProducts();
-      setProducts(res)
-    }
-    getProducts();
-  }, [])
+    fetchProducts()
+  }, [fetchProducts])
+
   return (
     <Table 
       columns={columns}
